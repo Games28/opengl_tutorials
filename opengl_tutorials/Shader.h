@@ -6,6 +6,8 @@
 #include <fstream>
 
 #include <GL\glew.h>
+#include <glm.hpp>
+#include <gtc\type_ptr.hpp>
 #include "CommonValues.h"
 
 #include "DirectionalLight.h"
@@ -19,6 +21,7 @@ public:
 
 	void CreateFromString(const char* vertexCode, const char* fragmentCode);
 	void CreateFromFiles(const char* vertexLocation, const char* fragmentLocation);
+	void CreateFromFiles(const char* vertexLocation, const char* geometryLocation, const char* fragmentLocation);
 
 	std::string ReadFile(const char* fileLocation);
 
@@ -32,10 +35,17 @@ public:
 	GLuint GetSpecularIntensityLocation();
 	GLuint GetShininessLocation();
 	GLuint GetEyePositionLocation();
+	GLuint GetOmniLightPosLocation();
+	GLuint GetFarPlaneLocation();
 
 	void SetDirectionalLight(DirectionalLight* dLight);
 	void SetPointLights(PointLight* pLight, unsigned int lightCount);
 	void SetSpotLights(SpotLight* sLight, unsigned int lightCount);
+	void SetTexture(GLuint textureUnit);
+	void SetDirectionalShadowMap(GLuint textureUnit);
+	void SetDirectionalLightTransform(glm::mat4* ltransform);
+	void SetLightMatrices(std::vector<glm::mat4> lightMatrices);
+
 
 	void UseShader();
 	void ClearShader();
@@ -48,7 +58,12 @@ private:
 
 
 	GLuint shaderID, uniformProjection, uniformModel, uniformView, uniformEyePosition,
-		uniformSpecularIntesity, uniformShininess;
+		uniformSpecularIntesity, uniformShininess,
+		uniformTexture,
+		uniformDrectionalLightTransform, uniformDirectionalShadowMap,
+		uniformOmniLightPos, uniformFarPlane;
+
+	GLuint uniformlightMatrices[6];
 
 	struct {
 		GLuint uniformColor;
@@ -89,6 +104,9 @@ private:
 
 
 	void CompileShader(const char* vertexCode, const char* fragmentCode);
+	void CompileShader(const char* vertexCode, const char* geometryCode, const char* fragmentCode);
 	void AddShader(GLuint theProgram, const char* shaderCode, GLenum shaderType);
+
+	void CompileProgram();
 };
 
