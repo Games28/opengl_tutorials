@@ -108,6 +108,11 @@ float  CalcOmniShadowFactor(PointLight light, int shadowIndex)
 	vec3 fragToLight = FragPos - light.position;
 	float closest = texture(omniShadowMaps[shadowIndex].shadowMap, fragToLight.r);
 	
+	closest *= omniShadowMaps[shadowIndex].farPlane;
+	
+	float current = length(fragToLight);
+	
+	
 }
 
 
